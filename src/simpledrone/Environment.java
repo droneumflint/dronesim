@@ -18,6 +18,7 @@ public class Environment extends SimState{
 	public ContinuousPortrayal2D yardPortrayal;
 	public double gridHeight= 100;
 	public Double2D baseLocation = new Double2D(50,5);
+	public Double2D targetLocation = new Double2D(75,75);
 
 	public Environment(long seed) {
 		super(seed);
@@ -53,7 +54,7 @@ public class Environment extends SimState{
 		schedule.scheduleRepeating(base);
 		
 		Target target = new Target();
-		yard.setObjectLocation(target, new Double2D(75,75));
+		yard.setObjectLocation(target, targetLocation);
 		yardPortrayal.setPortrayalForObject(target, target.myPortrayal2D);
 		schedule.scheduleRepeating(target);
 		

@@ -19,8 +19,8 @@ public class Drone implements Steppable{
 	final double droneSpeed = 5.0; 
 	boolean longRangeCom=true;
 	boolean shortRangeCom=true;
-	private double xdir= Math.sqrt(25/5);
-	private double ydir= Math.sqrt(25/5);
+	private double xdir= Math.random()*Math.sqrt(25/5);//Math.sqrt(25/5)
+	private double ydir= Math.random()*Math.sqrt(25/5);
 	private double longRange = 34;
 	int droneState=0;
 	
@@ -31,12 +31,13 @@ public class Drone implements Steppable{
 		yard = environment.yard;
 		myPosition = environment.yard.getObjectLocation(this);
 		//decideAction(state);
-		//checkState(state);
-		moveWithBoundaries(state);
+		checkState(state);
+		//moveWithBoundaries(state);
 		
 	}
 	private void checkState(SimState state) {
 		if(droneState == 0){
+			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.GREEN));
 			//Nomral State
 			moveWithBoundaries(state);
 			/*if((batteryPercent>(myPosition.distance(environment.baseLocation)/droneSpeed))){
@@ -44,8 +45,10 @@ public class Drone implements Steppable{
 			}*/
 			if(isLongRange()==true){
 				droneState=2;
-				environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.RED));
 				}
+			if (isAtTarget()==true){
+				droneState=3;
+			}
 		}
 		else if(droneState==1){
 			//needs charging
@@ -53,16 +56,23 @@ public class Drone implements Steppable{
 			if(myPosition==environment.baseLocation){
 				batteryPercent= batteryPercent+(100-batteryPercent);
 				droneState=0;
-			}else{batteryPercent=batteryPercent-1;}
-			
+			}else{batteryPercent=batteryPercent-1;}		
 		}
 		else if (droneState==2){
+			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.RED));
+			moveWithBoundaries(state);
 			if(isLongRange()==false){
 				droneState=0;
-				environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.GREEN));
+				
 				}
-			//moveWithBoundaries(state);
+			if (isAtTarget()==true){
+				droneState=3;
+			}
+			
 			//out of range
+		}else if (droneState==3){
+			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.YELLOW));
+			
 		}
 		// TODO Auto-generated method stub
 		
@@ -85,9 +95,7 @@ public class Drone implements Steppable{
 		
 			
 	}*/
-	private boolean isLongRange() {
-		return myPosition.distance(environment.baseLocation)>longRange;
-	}
+
 	
 	public double bxdir(double x){
 		//convert the SimState to our Environment
@@ -140,7 +148,16 @@ public class Drone implements Steppable{
 		yard.setObjectLocation(this, new Double2D(x,y));//move one step
 		
 	};
-		// TODO Auto-generated method stub
-		
+	
+	
+	//Current Events
+	public boolean isAtTarget(){
+		return myPosition.distance(environment.targetLocation)<5;	
 	}
+	private boolean isLongRange() {
+		return myPosition.distance(environment.baseLocation)>longRange;
+	}
+	
+	
+}
 
