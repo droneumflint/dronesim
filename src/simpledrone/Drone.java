@@ -23,6 +23,11 @@ public class Drone implements Steppable{
 	private double ydir= Math.random()*Math.sqrt(25/5);
 	private double longRange = 34;
 	int droneState=0;
+	private int droneId;
+	public Drone (int droneNumber){
+		this.droneId = droneNumber;
+		
+	}
 	
 
 	@Override
@@ -31,7 +36,8 @@ public class Drone implements Steppable{
 		yard = environment.yard;
 		myPosition = environment.yard.getObjectLocation(this);
 		//decideAction(state);
-		checkState(state);
+		//checkState(state);
+		moveToPoint(new Double2D((droneId),droneId));
 		//moveWithBoundaries(state);
 		
 	}
@@ -52,7 +58,7 @@ public class Drone implements Steppable{
 		}
 		else if(droneState==1){
 			//needs charging
-			moveToBase();
+			//moveToBase();
 			if(myPosition==environment.baseLocation){
 				batteryPercent= batteryPercent+(100-batteryPercent);
 				droneState=0;
@@ -126,18 +132,18 @@ public class Drone implements Steppable{
 		yard.setObjectLocation(this, new Double2D(x,y));
 		//sets the particle in the new location.
 	}
-	public void moveToBase(){
+	public void moveToPoint(Double2D point){
 		double x=myPosition.x,y=myPosition.y;
-		if (environment.baseLocation.x > x){
+		if (point.x > x){
 			xdir= Math.sqrt(25/5);	
-		}else if(environment.baseLocation.x < x){
+		}else if(point.x < x){
 			xdir= -Math.sqrt(25/5);
 		}else{
 			xdir=0;
 		}
-		if (environment.baseLocation.y > y){
+		if (point.y > y){
 			ydir= Math.sqrt(25/5);	
-		}else if(environment.baseLocation.y < y){
+		}else if(point.y < y){
 			ydir= -Math.sqrt(25/5);
 		}else{
 			ydir=0;
@@ -148,8 +154,6 @@ public class Drone implements Steppable{
 		yard.setObjectLocation(this, new Double2D(x,y));//move one step
 		
 	};
-	
-	
 	//Current Events
 	public boolean isAtTarget(){
 		return myPosition.distance(environment.targetLocation)<5;	
