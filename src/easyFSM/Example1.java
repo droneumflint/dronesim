@@ -1,6 +1,7 @@
 /**
  * Example1 Code exemplifies the usage of FSM with a fixed path XML configuration file 
  **/
+package easyFSM;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
