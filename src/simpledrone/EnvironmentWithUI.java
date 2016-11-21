@@ -31,11 +31,13 @@ public class EnvironmentWithUI extends GUIState{
 	
 	
 	
+	@Override
 	public void start()
 	{
 	super.start();
 	setupPortrayals();
 	}
+	@Override
 	public void load(SimState state)
 	{
 	super.load(state);
@@ -53,6 +55,7 @@ public class EnvironmentWithUI extends GUIState{
 	// redraw the display
 	display.repaint();
 	}
+	@Override
 	public void init(Controller c)
 	{
 	super.init(c);
@@ -64,6 +67,7 @@ public class EnvironmentWithUI extends GUIState{
 	displayFrame.setVisible(true);
 	display.attach( yardPortrayal, "Yard" );
 	}
+	@Override
 	public void quit()
 	{
 	super.quit();

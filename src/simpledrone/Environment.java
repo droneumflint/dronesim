@@ -14,7 +14,7 @@ public class Environment extends SimState{
 	 */
 	private static final long serialVersionUID = 2596652665511752118L;
 	public Continuous2D yard = new Continuous2D(1.0,100,100);
-	public int numDrones = 100;
+	public int numDrones = 10;
 	public ContinuousPortrayal2D yardPortrayal;
 	public double gridHeight= 100;
 	public Double2D baseLocation = new Double2D(50,5);
@@ -31,6 +31,7 @@ public class Environment extends SimState{
 	System.exit(0);
 	}
 	
+	@Override
 	public void start(){
 	super.start();
 	// clear the yard
@@ -44,7 +45,7 @@ public class Environment extends SimState{
 		//allDrones.resize(numDrones);
 		for(int i = 0; i < numDrones; i++){
 			Drone drone = new Drone(i);
-			yard.setObjectLocation(drone, new Double2D(45+(i*3),10));
+			yard.setObjectLocation(drone, baseLocation);
 			yardPortrayal.setPortrayalForObject(drone, drone.myPortrayal2D);
 			//allDrones.add(drone);
 			schedule.scheduleRepeating(drone);
