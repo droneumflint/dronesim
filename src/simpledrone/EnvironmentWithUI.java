@@ -17,7 +17,8 @@ public class EnvironmentWithUI extends GUIState{
 	{
 	EnvironmentWithUI vid = new EnvironmentWithUI();
 	Console c = new Console(vid);
-	c.setVisible(true);}
+	c.setVisible(true);
+	}
 
 	public EnvironmentWithUI(SimState state) {super(state);}
 	public EnvironmentWithUI(){
@@ -74,6 +75,9 @@ public class EnvironmentWithUI extends GUIState{
 	if (displayFrame!=null) displayFrame.dispose();
 	displayFrame = null;
 	display = null;
+	}
+	public Object getSimulationInspectedObject() {
+		return state;
 	}
 	
 
