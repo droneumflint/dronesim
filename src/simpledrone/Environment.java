@@ -17,9 +17,14 @@ public class Environment extends SimState{
 	public int numDrones = 10;
 	public ContinuousPortrayal2D yardPortrayal;
 	public double gridHeight= 100;
-	public Double2D baseLocation = new Double2D(50,5);
-	public Double2D targetLocation = new Double2D(75,75);
+	public Double2D baseLocation ;
+	public Double2D targetLocation;
 	public Bag allDrones;
+	public boolean isBoundaries = false;
+	private double baseLocationX=50;
+	private double baseLocationY=5;
+	private double targetLocationX =50;
+	private double targetLocationY= 50;
 
 	public Environment(long seed) {
 		super(seed);
@@ -30,6 +35,49 @@ public class Environment extends SimState{
 	doLoop(Environment.class, args);
 	System.exit(0);
 	}
+	
+	public boolean getBoundaries() {
+		return isBoundaries;
+	}
+
+	public void setBoundaries(boolean boundaries) {
+		this.isBoundaries = boundaries;
+	}
+	public double getBaseLocationX() {
+		return baseLocationX;
+	}
+
+	public void setBaseLocationX(double x) {
+		this.baseLocationX= x;
+	}
+	public double getBaseLocationY() {
+		return baseLocationY;
+	}
+
+	public void setBaseLocationY(double y) {
+		this.baseLocationY= y;
+	}
+	public double getTargetLocationX() {
+		return targetLocationX;
+	}
+
+	public void setTargetLocationX(double x) {
+		this.targetLocationX= x;
+	}
+	public double getTargetLocationY() {
+		return targetLocationY;
+	}
+
+	public void setTargetLocationY(double y) {
+		this.targetLocationY= y;
+	}
+	public void setNumDrones(int numDrones) {
+		this.numDrones= numDrones;
+	}
+	public int getNumDrones() {
+		return numDrones;
+	}
+	
 	
 	@Override
 	public void start(){
@@ -42,9 +90,12 @@ public class Environment extends SimState{
 	}
 	
 	private void placeAgents(){
+		baseLocation = new Double2D(baseLocationX,baseLocationY);
+		targetLocation = new Double2D(targetLocationX,targetLocationY);
 		//allDrones.resize(numDrones);
 		for(int i = 0; i < numDrones; i++){
 			Drone drone = new Drone(i);
+			drone.setBoundaries(isBoundaries);
 			yard.setObjectLocation(drone, baseLocation);
 			yardPortrayal.setPortrayalForObject(drone, drone.myPortrayal2D);
 			//allDrones.add(drone);
@@ -62,5 +113,6 @@ public class Environment extends SimState{
 		schedule.scheduleRepeating(target);
 		
 	}
+	
 
 }
