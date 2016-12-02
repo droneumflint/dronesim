@@ -47,6 +47,7 @@ public class Drone implements Steppable{
 			if(atPoint(environment.baseLocation, 2)){
 				rechargeBattery();
 			}
+			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.RED));
 		}
 		//if (hasAssist()){
 		//	environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.GREEN));
@@ -127,9 +128,9 @@ public class Drone implements Steppable{
 	public boolean inBatteryRange() {
 		return myPosition.distance(environment.baseLocation)<((batteryPercent-batteryDrainRate)*droneSpeed);
 	};	
-	private boolean inBatteryRange(Double2D point) {
+	/*private boolean inBatteryRange(Double2D point) {
 		return point.distance(environment.baseLocation)<((batteryPercent)*droneSpeed);
-	};	
+	};*/	
 	public boolean hasAssist() {
 		Bag inWifiRange = yard.getNeighborsWithinDistance(myPosition, wifiRange);
 		for(int i = 0 ; i < inWifiRange.size(); i++){	

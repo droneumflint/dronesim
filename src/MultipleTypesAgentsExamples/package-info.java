@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author markalli
- *
- */
-package MultipleTypesAgentsExamples;
