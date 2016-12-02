@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/bsh-2.0b4.jar"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/EasyFSM-0.0.006.jar"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/itext-1.2.jar"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/jcommon-1.0.21.jar"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/jfreechart-1.0.17.jar"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/jmf.jar"/>
+	<classpathentry kind="lib" path="/home/markalli/workspace/dronesim/libraries/portfolio.jar"/>
+	<classpathentry kind="lib" path="mason"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
