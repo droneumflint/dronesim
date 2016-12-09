@@ -20,7 +20,7 @@ public class Environment extends SimState{
 	public Double2D baseLocation ;
 	public Double2D targetLocation;
 	public Bag allDrones;
-	public boolean isBoundaries = false;
+	public boolean isBoundaries = true;
 	private double baseLocationX=50;
 	private double baseLocationY=5;
 	private double targetLocationX =50;
