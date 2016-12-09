@@ -1,0 +1,3 @@
+[submodule "StateMachineTrial"]
+	path = StateMachineTrial
+	url = https://github.com/droneumflint/StateMachineTrial.git
