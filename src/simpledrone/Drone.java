@@ -174,9 +174,9 @@ public class Drone implements Steppable{
 	private boolean inBounds(Double2D point){
 		return ((hasAssist(point)||inCellRange(point)));
 	};
-	/*private boolean inBounds(){
+	private boolean inBounds(){
 		return ((hasAssist()||inCellRange()));
-	};*/
+	};
 
 	public void setBoundaries(boolean boundaries) {
 		this.isBoundaries = boundaries;
