@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="StateMachineTrial"/>
+	<classpathentry kind="src" path="StateMachineTrial/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="mason"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/bsh-2.0b4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/EasyFSM-0.0.006.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/itext-1.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/jcommon-1.0.21.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/jfreechart-1.0.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/jmf.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Joshua/git/dronesim/libraries/portfolio.jar"/>
+	<classpathentry kind="lib" path="libraries/bsh-2.0b4.jar"/>
+	<classpathentry kind="lib" path="libraries/EasyFSM-0.0.006.jar"/>
+	<classpathentry kind="lib" path="libraries/itext-1.2.jar"/>
+	<classpathentry kind="lib" path="libraries/jcommon-1.0.21.jar"/>
+	<classpathentry kind="lib" path="libraries/jfreechart-1.0.17.jar"/>
+	<classpathentry kind="lib" path="libraries/jmf.jar"/>
+	<classpathentry kind="lib" path="libraries/portfolio.jar"/>
+	<classpathentry kind="lib" path="mason.19.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

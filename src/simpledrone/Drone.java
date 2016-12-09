@@ -6,7 +6,6 @@ import sim.field.continuous.*;
 import sim.portrayal.simple.OvalPortrayal2D;
 import java.awt.Color;
 
-
 import DroneEvents.*;
 import DroneStates.DroneFSM;
 
