@@ -5,32 +5,33 @@ import sim.util.*;
 import sim.field.continuous.*;
 import sim.portrayal.simple.OvalPortrayal2D;
 import java.awt.Color;
+import java.util.List;
 
 import DroneEvents.*;
 import DroneStates.DroneFSM;
 
 @SuppressWarnings("serial")
 public class Drone implements Steppable{
-	Double2D myPosition; //Drone Position at Start of Step
-	Environment environment;// Environment at Start of Step
-	Continuous2D yard; //Yard at Start of Step
+	Double2D myPosition; 					//Drone Position at Start of Step
+	Environment environment;				// Environment at Start of Step
+	Continuous2D yard; 						//Yard at Start of Step
 	public OvalPortrayal2D myPortrayal2D = new OvalPortrayal2D(Color.GREEN); //Default Portrayal
-	double batteryPercent = 100; 
-	double batteryDrainRate = .05;//Battery drain for each distance traveled
-	final double droneSpeed = 5; //Distance drone can move in one step 
-	private double cellRange = 50;//Distance drone can be away from Base and communicate
-	private double wifiRange = 10;//Distance drone can be used as relay to communicate to Base
-	public int droneId;// Declared when initialized in Environment
-	Double2D[] points = new Double2D[8];
-	int help=0;
-	boolean isBoundaries;
-	EventListener localEvents = new EventListener();
-	DroneFSM droneFSM = new DroneFSM(localEvents);
+	double batteryPercent = 100; 			//Current Battery percent
+	double batteryDrainRate = .05;			//Battery drain for each distance traveled
+	final double droneSpeed = 5; 			//Distance drone can move in one step 
+	private double cellRange = 100;			//Distance drone can be away from Base and communicate
+	private double wifiRange = 1;			//Distance drone can be used as relay to communicate to Base
+	public int droneId;						//Declared when initialized in Environment
+	Double2D[] points = new Double2D[8];	//Array to hold points of search
+	int searchPoint=0;						//Number of completed search points
+	boolean isBoundaries;					//Sees if boundaries are turned on in simulator
+	EventListener localEvents = new EventListener(); //Events that this drones makes
+	DroneFSM droneFSM = new DroneFSM(localEvents);   //state machine that listens to events made by drone.
 	
 	public Drone (int droneNumber){
-		this.droneId = droneNumber;
-		recievePlan();
-		for (int i=0;i<8; i++){
+		this.droneId = droneNumber; 		//Assigns what drone this is
+		recievePlan();						//Creates event that drone has received plans 
+		for (int i=0;i<8; i++){             //populates points[] based off drone id
 			if((i%2)==0){
 				points[i]= new Double2D((droneId*5)+i*10,0);
 			}else{
@@ -38,7 +39,6 @@ public class Drone implements Steppable{
 			}			
 		}
 	};
-	
 	//Called each Step in simulator
 	public void step(SimState state) {
 		environment = (Environment) state;
@@ -46,44 +46,38 @@ public class Drone implements Steppable{
 		myPosition = environment.yard.getObjectLocation(this);
 		updateEvents();
 		droneActions();
-	
+	}
+			
+	public void moveInGrid(){
+		int error = moveToPoint(points[searchPoint]);
+		if ((atPoint(points[searchPoint],1.0))&& searchPoint<7){
+			searchPoint++;
+		}else if(error==67){
+			reqAssist();
+		}
+	}
+
+	private void reqAssist() {
+		
 		
 	}
-	
-	//Moves to a point in the yard, going directly there at Max speed		
-	public void moveToPoint(Double2D point){
-		Double2D temp =myPosition.subtract(point);
-		if (Math.abs(temp.length())>1){
-			if(temp.length()>droneSpeed){
-				temp=temp.resize(-droneSpeed);
-			}
-			temp=temp.add(myPosition);
-			batteryPercent -=batteryDrainRate; 
-			yard.setObjectLocation(this, temp);		
-		}
-	};
-	public void moveInGrid(){
-		int error = moveToPoint(points[help],isBoundaries);
-		if ((atPoint(points[help],1.0)  || error==1)&& help<7){
-			help++;
-		};
+	public void assisting(){
+		
 	}
 
 	//Tries to move to point in yard, doesn't if point is out of bounds and isBoundaryOn is true
-	public int moveToPoint(Double2D point, boolean isBoundaryOn){
+	public int moveToPoint(Double2D point){
 		Double2D temp =myPosition.subtract(point);
 		int error = 0;
-		if(isBoundaryOn){
+		if(isBoundaries){
 			if (Math.abs(temp.length())>1){
 				if(temp.length()>droneSpeed){
 					temp=temp.resize(-droneSpeed);
 				}
 				temp=temp.add(myPosition);
-				
 				if(inBounds(temp)){
 					batteryPercent -=(batteryDrainRate*temp.length());
 					yard.setObjectLocation(this, temp);
-					
 				}else{error++;}			
 			}
 		}
@@ -118,63 +112,54 @@ public class Drone implements Steppable{
 		return val;	
 	};
 	public boolean atBase(){
-		boolean val = false ;
-		if ((myPosition.distance(environment.baseLocation)<2)){
-			val = true;
+		boolean temp=atPoint(environment.baseLocation,2);
+		if (temp){
 			new ReturnComplete(localEvents);
 		}
-		return val;	
+		return temp;	
 	};
 	public boolean atTarget(){
-		boolean val = false ;
-		if ((myPosition.distance(environment.targetLocation)<6)){
-			val = true;
+		boolean temp=atPoint(environment.targetLocation,6);
+		if (temp){
 			new PossibleTarget(localEvents);
 		}
-		return val;	
+		return temp;
 	};
 	public boolean inCellRange() {
-		return myPosition.distance(environment.baseLocation)<cellRange;
+		return inCellRange(myPosition);
 	};	
 	private boolean inCellRange(Double2D point) {
 		return point.distance(environment.baseLocation)<cellRange;
 	};	
 	public boolean inBatteryRange() {
 		boolean val = true;
-		if (!(myPosition.distance(environment.baseLocation)<((batteryPercent-batteryDrainRate)*droneSpeed))){
+		if ((myPosition.distance(environment.baseLocation)>((batteryPercent-batteryDrainRate)*droneSpeed))){
 			val = false;
 			new PONR(localEvents);
 		}
 		return val;
 	};	
-	/*private boolean inBatteryRange(Double2D point) {
-		return point.distance(environment.baseLocation)<((batteryPercent)*droneSpeed);
-	};*/	
-	public boolean hasAssist() {
-		Bag inWifiRange = yard.getNeighborsWithinDistance(myPosition, wifiRange);
-		for(int i = 0 ; i < inWifiRange.size(); i++){	
-			if(!(inWifiRange.get(i) instanceof Drone)){
-				inWifiRange.remove(i);
-			}
-		}
-		//return (inWifiRange.numObjs>1);
-		return false;
+	public boolean inAssistRange() {
+		return inAssistRange(myPosition);
 	};
-	private boolean hasAssist(Double2D point) {
-		Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
+
+	
+	private boolean inAssistRange(Double2D point) {
+		/*Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
 		for(int i = 0 ; i < inWifiRange.size(); i++){	
-			if(!(inWifiRange.get(i) instanceof Drone)){
+			if(!(inWifiRange.get(i) instanceof Drone)||(inWifiRange.get(i).equals(this))){
 				inWifiRange.remove(i);
+				inWifiRange.toArray();
 			}
 		}
-		//return (inWifiRange.numObjs>1);]
-		return false;
+		return (inWifiRange.numObjs>0);*/
+        return false;
 	};
 	private boolean inBounds(Double2D point){
-		return ((hasAssist(point)||inCellRange(point)));
+		return ((inAssistRange()||inCellRange(point)));
 	};
 	private boolean inBounds(){
-		return ((hasAssist()||inCellRange()));
+		return inBounds(myPosition);
 	};
 
 	public void setBoundaries(boolean boundaries) {
@@ -208,10 +193,11 @@ public class Drone implements Steppable{
 	
 	//For Each Drone State, says the actions should perform
 	private void droneActions(){
+		batteryPercent = batteryPercent- .5;
 		if(droneFSM.getCurrentState() == droneFSM.getSearching()){
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.green));
 			moveInGrid();
-			batteryPercent = batteryPercent- .5;
+			
 		}else if(droneFSM.getCurrentState() ==droneFSM.getReturning()){
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.red));
 			moveToPoint(environment.baseLocation);
@@ -224,9 +210,8 @@ public class Drone implements Steppable{
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.pink));
 			rechargeBattery();
 		}else{
-			//System.out.println("Dont Know State");
+			System.out.println("Don't Know State");
 		}
-		//batteryPercent = batteryPercent- .00005;
 	}
 }
 

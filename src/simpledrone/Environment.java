@@ -93,14 +93,7 @@ public class Environment extends SimState{
 		baseLocation = new Double2D(baseLocationX,baseLocationY);
 		targetLocation = new Double2D(targetLocationX,targetLocationY);
 		//allDrones.resize(numDrones);
-		for(int i = 0; i < numDrones; i++){
-			Drone drone = new Drone(i);
-			drone.setBoundaries(isBoundaries);
-			yard.setObjectLocation(drone, baseLocation);
-			yardPortrayal.setPortrayalForObject(drone, drone.myPortrayal2D);
-			//allDrones.add(drone);
-			schedule.scheduleRepeating(drone);
-			}
+		
 		
 		HomeBase base = new HomeBase();
 		yard.setObjectLocation(base, baseLocation);
@@ -111,6 +104,15 @@ public class Environment extends SimState{
 		yard.setObjectLocation(target, targetLocation);
 		yardPortrayal.setPortrayalForObject(target, target.myPortrayal2D);
 		schedule.scheduleRepeating(target);
+		
+		for(int i = 0; i < numDrones; i++){
+			Drone drone = new Drone(i);
+			drone.setBoundaries(isBoundaries);
+			yard.setObjectLocation(drone, baseLocation);
+			yardPortrayal.setPortrayalForObject(drone, drone.myPortrayal2D);
+			//allDrones.add(drone);
+			schedule.scheduleRepeating(drone);
+			}
 		
 	}
 	
