@@ -19,7 +19,7 @@ public class Drone implements Steppable{
 	double batteryPercent = 100; 			//Current Battery percent
 	double batteryDrainRate = .05;			//Battery drain for each distance traveled
 	final double droneSpeed = 5; 			//Distance drone can move in one step 
-	private double cellRange = 100;			//Distance drone can be away from Base and communicate
+	private double cellRange = 50;			//Distance drone can be away from Base and communicate
 	private double wifiRange = 1;			//Distance drone can be used as relay to communicate to Base
 	public int droneId;						//Declared when initialized in Environment
 	Double2D[] points = new Double2D[8];	//Array to hold points of search
@@ -145,15 +145,15 @@ public class Drone implements Steppable{
 
 	
 	private boolean inAssistRange(Double2D point) {
-		/*Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
+		Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
 		for(int i = 0 ; i < inWifiRange.size(); i++){	
 			if(!(inWifiRange.get(i) instanceof Drone)||(inWifiRange.get(i).equals(this))){
 				inWifiRange.remove(i);
 				inWifiRange.toArray();
 			}
 		}
-		return (inWifiRange.numObjs>0);*/
-        return false;
+		return (inWifiRange.numObjs>0);
+        //return false;
 	};
 	private boolean inBounds(Double2D point){
 		return ((inAssistRange()||inCellRange(point)));
