@@ -25,6 +25,7 @@ public class Environment extends SimState{
 	private double baseLocationY=5;
 	private double targetLocationX =50;
 	private double targetLocationY= 50;
+	public double[][] dronesInfo = new double[numDrones][4];
 
 	public Environment(long seed) {
 		super(seed);
@@ -107,6 +108,7 @@ public class Environment extends SimState{
 		
 		for(int i = 0; i < numDrones; i++){
 			Drone drone = new Drone(i);
+			dronesInfo[i][0]=i;
 			drone.setBoundaries(isBoundaries);
 			yard.setObjectLocation(drone, baseLocation);
 			yardPortrayal.setPortrayalForObject(drone, drone.myPortrayal2D);

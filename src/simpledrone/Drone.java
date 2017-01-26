@@ -4,6 +4,7 @@ import sim.engine.*;
 import sim.util.*;
 import sim.field.continuous.*;
 import sim.portrayal.simple.OvalPortrayal2D;
+
 import java.awt.Color;
 import java.util.List;
 
@@ -58,10 +59,21 @@ public class Drone implements Steppable{
 	}
 
 	private void reqAssist() {
-		
-		
+		int bestDrone=50;
+		double bestUtility = 100;
+		for(int i = 0; i < environment.numDrones; i++){
+			if(!(i==droneId)){
+				double utility=this.myPosition.distance(environment.dronesInfo[i][1],environment.dronesInfo[i][2])*(1/environment.dronesInfo[i][3]);
+				if (utility<bestUtility){
+					bestDrone=i;
+					bestUtility=utility;
+				}
+			}
+			
+		}
+		environment.dronesInfo[bestDrone][0]=droneId+1;	
 	}
-	public void assisting(){
+	public void isAssisting(){
 		
 	}
 
@@ -145,15 +157,17 @@ public class Drone implements Steppable{
 
 	
 	private boolean inAssistRange(Double2D point) {
-		Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
+		/*Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
 		for(int i = 0 ; i < inWifiRange.size(); i++){	
 			if(!(inWifiRange.get(i) instanceof Drone)||(inWifiRange.get(i).equals(this))){
 				inWifiRange.remove(i);
 				inWifiRange.toArray();
 			}
+			
 		}
 		return (inWifiRange.numObjs>0);
-        //return false;
+		*/
+        return false;
 	};
 	private boolean inBounds(Double2D point){
 		return ((inAssistRange()||inCellRange(point)));
@@ -181,7 +195,12 @@ public class Drone implements Steppable{
 		return batteryPercent;
 	}
 	
-	
+	public void printToGlobalArray(){
+		environment.dronesInfo[droneId][1]=myPosition.getX();
+		environment.dronesInfo[droneId][2]=myPosition.getY();
+		environment.dronesInfo[droneId][3]=batteryPercent;
+		
+	}
 	private void updateEvents() {
 		inBatteryRange();
 		isBatteryFull();
@@ -212,6 +231,7 @@ public class Drone implements Steppable{
 		}else{
 			System.out.println("Don't Know State");
 		}
+		printToGlobalArray();
 	}
 }
 
