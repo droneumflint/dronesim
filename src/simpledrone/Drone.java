@@ -59,7 +59,7 @@ public class Drone implements Steppable{
 	}
 
 	private void reqAssist() {
-		int bestDrone=50;
+		int bestDrone=droneId;
 		double bestUtility = 100;
 		for(int i = 0; i < environment.numDrones; i++){
 			if(!(i==droneId)){
@@ -71,11 +71,11 @@ public class Drone implements Steppable{
 			}
 			
 		}
-		environment.dronesInfo[bestDrone][0]=droneId+1;	
+		environment.dronesInfo[bestDrone][0]=droneId;	
 		System.out.println("bestDrone = "+bestDrone);
 	}
 	public void isAssisting(){
-		if(!(environment.dronesInfo[droneId][0]==0)){
+		if(!(environment.dronesInfo[droneId][0]==droneId)){
 			new RespondingToRequest(localEvents);
 			
 			
@@ -214,6 +214,7 @@ public class Drone implements Steppable{
 		atTarget();
 		isAssisting();
 		droneFSM.update();
+		printToGlobalArray();
 		
 	}
 	
@@ -229,7 +230,7 @@ public class Drone implements Steppable{
 			moveToPoint(environment.baseLocation);
 		}else if(droneFSM.getCurrentState() == droneFSM.getAssisting()){
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.yellow));
-			moveToPoint(new Double2D(environment.dronesInfo[(int) (environment.dronesInfo[droneId][0]-1)][1],environment.dronesInfo[(int) (environment.dronesInfo[droneId][0]-1)][2]));
+			moveToPoint(new Double2D(environment.dronesInfo[(int) (environment.dronesInfo[droneId][0])][1],environment.dronesInfo[(int) (environment.dronesInfo[droneId][0])][2]));
 			
 		}else if(droneFSM.getCurrentState() == droneFSM.getTracking()){
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.blue));		
@@ -239,7 +240,7 @@ public class Drone implements Steppable{
 		}else{
 			System.out.println("Don't Know State");
 		}
-		printToGlobalArray();
+		
 	}
 }
 

@@ -26,6 +26,8 @@ public class Environment extends SimState{
 	private double targetLocationX =50;
 	private double targetLocationY= 50;
 	public double[][] dronesInfo = new double[numDrones][4];
+	private double cellRange = 50;
+	
 
 	public Environment(long seed) {
 		super(seed);
@@ -53,6 +55,12 @@ public class Environment extends SimState{
 	}
 	public double getBaseLocationY() {
 		return baseLocationY;
+	}
+	public void setCellRange(double cellrange) {
+		this.cellRange= cellrange;
+	}
+	public double getCellRange(double cellrange) {
+		return cellRange;
 	}
 
 	public void setBaseLocationY(double y) {
@@ -107,8 +115,8 @@ public class Environment extends SimState{
 		schedule.scheduleRepeating(target);
 		
 		for(int i = 0; i < numDrones; i++){
+			dronesInfo[i][0]=i;
 			Drone drone = new Drone(i);
-			dronesInfo[i][0]=0;
 			drone.setBoundaries(isBoundaries);
 			yard.setObjectLocation(drone, baseLocation);
 			yardPortrayal.setPortrayalForObject(drone, drone.myPortrayal2D);
