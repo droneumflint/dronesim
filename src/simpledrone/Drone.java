@@ -62,11 +62,12 @@ public class Drone implements Steppable{
 		int bestDrone=droneId;
 		double bestUtility = 100;
 		for(int i = 0; i < environment.numDrones; i++){
-			if(!(i==droneId)){
+			if((!(i==droneId))&&(environment.dronesInfo[droneId][5]==0)){
 				double utility=this.myPosition.distance(environment.dronesInfo[i][1],environment.dronesInfo[i][2])*(1/environment.dronesInfo[i][3]);
 				if (utility<bestUtility){
 					bestDrone=i;
 					bestUtility=utility;
+					environment.dronesInfo[droneId][5]=1;
 				}
 			}
 			
