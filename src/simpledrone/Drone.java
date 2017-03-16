@@ -21,7 +21,7 @@ public class Drone implements Steppable{
 	double batteryDrainRate = .05;			//Battery drain for each distance traveled
 	final double droneSpeed = 5; 			//Distance drone can move in one step 
 	private double cellRange = 50;			//Distance drone can be away from Base and communicate
-	private double wifiRange = 1;			//Distance drone can be used as relay to communicate to Base
+	private double wifiRange =5;			//Distance drone can be used as relay to communicate to Base
 	public int droneId;						//Declared when initialized in Environment
 	Double2D[] points = new Double2D[8];	//Array to hold points of search
 	int searchPoint=0;						//Number of completed search points
@@ -34,9 +34,9 @@ public class Drone implements Steppable{
 		recievePlan();						//Creates event that drone has received plans 
 		for (int i=0;i<8; i++){             //populates points[] based off drone id
 			if((i%2)==0){
-				points[i]= new Double2D((droneId*5)+i*10,0);
+				points[i]= new Double2D((droneId*5+1)+i*10,0);
 			}else{
-				points[i]= new Double2D((droneId*5)+i*10,80);
+				points[i]= new Double2D((droneId*5+1)+i*10,80);
 			}			
 		}
 	};
@@ -61,19 +61,23 @@ public class Drone implements Steppable{
 	private void reqAssist() {
 		int bestDrone=droneId;
 		double bestUtility = 100;
-		for(int i = 0; i < environment.numDrones; i++){
-			if((!(i==droneId))&&(environment.dronesInfo[droneId][5]==0)){
-				double utility=this.myPosition.distance(environment.dronesInfo[i][1],environment.dronesInfo[i][2])*(1/environment.dronesInfo[i][3]);
-				if (utility<bestUtility){
-					bestDrone=i;
-					bestUtility=utility;
-					environment.dronesInfo[droneId][5]=1;
+		if(environment.dronesInfo[droneId][4]==0){
+			for(int i = 0; i < environment.numDrones; i++){
+				if((!(i==droneId))&&(environment.dronesInfo[i][0]==i)&&(environment.dronesInfo[i][4]==0)){
+					double utility=this.myPosition.distance(environment.dronesInfo[i][1],environment.dronesInfo[i][2])*(1/environment.dronesInfo[i][3]);
+					if (utility<bestUtility){
+						bestDrone=i;
+						bestUtility=utility;	
+					}	
+					
 				}
 			}
-			
+			System.out.println(droneId+"'s bestDrone is = "+bestDrone);
+			environment.dronesInfo[bestDrone][0]=droneId;
 		}
-		environment.dronesInfo[bestDrone][0]=droneId;	
-		System.out.println("bestDrone = "+bestDrone);
+		environment.dronesInfo[droneId][4]=1;
+			
+		
 	}
 	public void isAssisting(){
 		if(!(environment.dronesInfo[droneId][0]==droneId)){
@@ -164,7 +168,7 @@ public class Drone implements Steppable{
 
 	
 	private boolean inAssistRange(Double2D point) {
-		/*Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
+		Bag inWifiRange = yard.getNeighborsWithinDistance(point, wifiRange);
 		for(int i = 0 ; i < inWifiRange.size(); i++){	
 			if(!(inWifiRange.get(i) instanceof Drone)||(inWifiRange.get(i).equals(this))){
 				inWifiRange.remove(i);
@@ -173,8 +177,7 @@ public class Drone implements Steppable{
 			
 		}
 		return (inWifiRange.numObjs>0);
-		*/
-        return false;
+	
 	};
 	private boolean inBounds(Double2D point){
 		return ((inAssistRange()||inCellRange(point)));
@@ -228,7 +231,9 @@ public class Drone implements Steppable{
 			
 		}else if(droneFSM.getCurrentState() ==droneFSM.getReturning()){
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.red));
+			isBoundaries=false;
 			moveToPoint(environment.baseLocation);
+			isBoundaries=true;
 		}else if(droneFSM.getCurrentState() == droneFSM.getAssisting()){
 			environment.yardPortrayal.setPortrayalForObject(this, new OvalPortrayal2D(Color.yellow));
 			moveToPoint(new Double2D(environment.dronesInfo[(int) (environment.dronesInfo[droneId][0])][1],environment.dronesInfo[(int) (environment.dronesInfo[droneId][0])][2]));
